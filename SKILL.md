@@ -124,6 +124,8 @@ How much do you want?
 
 **The call is never withheld.** It prints before the menu, every time, whatever the reader chose last time. Only the depth below it is negotiable.
 
+**Never write a record into this skill's own directory.** If the project under debate happens to be the debate-room repository itself, the record goes to the terminal or the user's vault — never `docs/decisions/` inside it. A pre-commit hook enforces this, and the repository ships the format, not anyone's decisions.
+
 Option 3 is where the record's destination gets settled — never ask about it separately. Store the answer in `output.local.json` beside this skill and apply it silently from then on; the menu is skipped on later debates, the call is not.
 
 **Never narrate the mechanism.** "The record-location question is required once per project by the debate skill" is not a question — it is a description of one, and it leaves the reader with nothing to answer. Ask the question in the reader's words, or say nothing.

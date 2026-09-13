@@ -1,2 +1,6 @@
 .DS_Store
 output.local.json
+docs/decisions/
+records/
+*.record.md
+*decision-record*

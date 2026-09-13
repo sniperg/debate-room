@@ -1,0 +1,33 @@
+#!/bin/sh
+# Refuse to commit debate records into this repository.
+# The repo ships the format; records belong in the debated project, a notes
+# vault, or the terminal. Bypass deliberately with `git commit --no-verify`.
+
+fail=0
+templates="record-template.md scroll-template.html"
+
+for f in $(git diff --cached --name-only --diff-filter=ACM); do
+  case "$f" in
+    docs/decisions/*|records/*|*decision-record*|*.record.md)
+      echo "blocked: $f looks like a debate record (path)"
+      fail=1
+      continue
+      ;;
+  esac
+
+  case " $templates " in *" $f "*) continue ;; esac
+
+  # A filled-in record carries concrete frontmatter; the templates carry
+  # placeholders in angle brackets, so they never match these.
+  if git show ":$f" 2>/dev/null | grep -qE '^(verdict: *(accept|reject)|searches: *[0-9]|rounds: *[0-9])'; then
+    echo "blocked: $f contains debate-record frontmatter (verdict/rounds/searches)"
+    fail=1
+  fi
+done
+
+if [ "$fail" -ne 0 ]; then
+  echo
+  echo "No debate records in this repository. Send the record to the debated"
+  echo "project, a notes vault, or the terminal instead."
+  exit 1
+fi
