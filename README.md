@@ -36,6 +36,14 @@ git clone https://github.com/sniperg/debate-room.git ~/.agents/skills/debate
 
 **How you invoke it differs by harness.** Claude Code exposes skills as slash commands, so `/debate` works there. Codex has no user-defined slash commands — skills are offered to the model, so ask for it by name: *"use the debate skill on this"*. In both, the agent should also reach for it unprompted before a change lands.
 
+## No records in this repo
+
+The repository ships the format, never anyone's decisions. Records go to the project being debated, a notes vault, or the terminal. A pre-commit hook enforces it — enable it after cloning:
+
+```bash
+git config core.hooksPath hooks
+```
+
 ## The turn format
 
 Each turn is a fixed set of slots, one sentence each. Nothing else goes in a turn.
