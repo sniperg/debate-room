@@ -119,12 +119,12 @@ The call: <VERDICT> — <the decision in one sentence, with its conditions>
 How much do you want?
   1. Just this.
   2. The full proceedings — every turn, the struck claims, the evidence ledger.
-  3. Write it to a file — a docs/decisions/ folder, a notes vault, or somewhere else.
+  3. Write it to a file — a docs/decisions/ folder, wherever you write notes, or somewhere else.
 ```
 
 **The call is never withheld.** It prints before the menu, every time, whatever the reader chose last time. Only the depth below it is negotiable.
 
-**Never write a record into this skill's own directory.** If the project under debate happens to be the debate-room repository itself, the record goes to the terminal or the user's vault — never `docs/decisions/` inside it. A pre-commit hook enforces this, and the repository ships the format, not anyone's decisions.
+**Never write a record into this skill's own directory.** If the project under debate happens to be the debate-room repository itself, the record goes to the terminal or wherever the user writes notes — never `docs/decisions/` inside it. A pre-commit hook enforces this, and the repository ships the format, not anyone's decisions.
 
 Option 3 is where the record's destination gets settled — never ask about it separately. Store the answer in `output.local.json` beside this skill and apply it silently from then on; the menu is skipped on later debates, the call is not.
 
@@ -144,12 +144,12 @@ On the first debate in a project, ask the user once, offering the destinations t
 |---|---|
 | Terminal only | Print the record, write no file |
 | Project file | `docs/decisions/YYYY-MM-DD-<slug>.md` in the repo |
-| Notes vault | Whatever notes system they keep — Obsidian, Logseq, a plain markdown folder. Ask once for the path and store it; never guess an app, an operating system, or a location |
+| Notes | Wherever they write notes — an app, a synced folder, plain markdown on disk. Ask once for the path and store it; never guess an app, an operating system, or a location |
 | Scroll | Claude Code only — publish `scroll-template.html` as an Artifact and hand over the link |
 
 Record the answer — destination and path — in `output.local.json` beside this skill and never ask again in that project; the user changes it by saying so. That file is gitignored, so machine-specific paths stay out of the repository. Asking every debate turns the record into a reason to skip debating.
 
-The vault option uses the frontmatter already in `record-template.md` — `verdict`, `rounds`, `judge`, `tags` — so past decisions are queryable. The scroll is a rendering of the same record, never a replacement for it.
+The notes option uses the frontmatter already in `record-template.md` — `verdict`, `rounds`, `judge`, `tags` — so past decisions are queryable. The scroll is a rendering of the same record, never a replacement for it.
 
 Title the record after the subject of the motion in two to four words — name the thing being decided, not "Debate Record", and not the whole motion sentence. One record per debate, rewritten in place if the debate reopens.
 
