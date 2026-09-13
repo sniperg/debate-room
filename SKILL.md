@@ -1,6 +1,6 @@
 ---
 name: debate
-description: Use when about to make a change or commit to a decision in a task - before editing files, choosing an approach or library, changing scope, spending money, or declaring work done. Also use when the user asks to debate, challenge, stress-test, argue both sides of, or pressure-test a decision, or says to stop agreeing with them or stop being a yes man.
+description: Use when the user explicitly calls for it - /debate, "debate this", "argue both sides", "challenge this", "stress-test this decision", "play devil's advocate", "stop agreeing with me", "stop being a yes man" - or asks for a second opinion on a change before it is made. Do not invoke it unasked, and do not carry it into the next decision once a verdict has been issued.
 ---
 
 # Debate
@@ -10,6 +10,17 @@ description: Use when about to make a change or commit to a decision in a task -
 Every change is argued before it lands. **X** proposes and defends. **Y** attacks it, supplies alternatives, and rules on it. A **Judge** breaks deadlock. Neither party decides alone — a decision made by one voice is a decision made by a yes man.
 
 **Core principle: Y's job is not to approve X. Y's job is to find the better option — which may be this change, no change, or a different change.**
+
+## One call, one debate
+
+The skill is **spent the moment a verdict is issued** — by Y, or by the Judge. It covers exactly one motion, and then it is off.
+
+- Do not apply it to the next change, however obviously it would qualify.
+- Do not carry the X/Y framing, the slot format, or the challenging tone into later replies.
+- Implementing the verdict is not a new debate. Carrying out an `ACCEPT WITH CHANGES` needs no second round.
+- A follow-up change that grew out of the verdict is still not a new debate. It waits to be called.
+
+It comes back only when the user calls it again by name. If they want it to stay on across several decisions, they will say so — until then, silence means off.
 
 ## Roles
 

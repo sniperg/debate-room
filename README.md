@@ -13,6 +13,7 @@ The point is not friction. The point is that a decision approved by the same rea
 - **ACCEPT is earned:** Y may only accept after building the strongest rival option and stating exactly why it loses.
 - **Both sides are armed the same.** `WebSearch`, `WebFetch`, `scrapling`, `playwright`, `agent-browser`, `agent-reach` — a challenger better armed than the proposer wins on resources, not reason.
 - **Search before you strike.** Y may not strike a claim it has not itself tried to verify, and hard-to-verify is graded `Unverified`, never `Struck` — otherwise the more googleable side always wins.
+- **One call, one debate.** It covers a single motion, then switches off until you call it again. It never latches onto the changes that follow.
 - **You choose the depth.** Every debate ends with the call, then a menu: just the verdict, the full proceedings, or write it to a file. The call is never withheld behind the question.
 - **Every debate ends in a record** — portable markdown with the turns, the evidence ledger, the three options and the call, filed wherever you keep decisions (a repo folder, wherever you write notes, or a published HTML scroll on Claude Code). Markdown is canonical so the skill works in Codex and anywhere else, not just Claude Code.
 - **Y must weigh three options before any verdict:** do it, don't do it, do something else. A verdict that never named an alternative is not a verdict.
