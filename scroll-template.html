@@ -1,4 +1,4 @@
-<title>Redis on a Static Site</title>
+<title>Record of Proceedings</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500;6..72,600&display=swap">
 <style>
   :root {
@@ -333,18 +333,18 @@
 <div class="sheet">
 
   <p class="eyebrow">Record of proceedings</p>
-  <h1>Add Redis to cache the CMS on a 300-visitor marketing site</h1>
+  <h1>The motion, as a proposal or a question</h1>
 
   <div class="docket">
-    <span>Ref <b>DBT-0007</b></span>
-    <span>Heard <b>2026-09-13</b></span>
-    <span>Rounds <b>2 of 10</b></span>
-    <span>Searches <b>3</b></span>
+    <span>Ref <b>DBT-0000</b></span>
+    <span>Heard <b>YYYY-MM-DD</b></span>
+    <span>Rounds <b>n of 10</b></span>
+    <span>Searches <b>n</b></span>
     <span>Judge <b>not called</b></span>
   </div>
 
   <h2>The motion</h2>
-  <p class="motion">Install Upstash Redis and cache CMS responses across the marketing site — roughly one day of work and about $10 a month — <em>because a teammate said in standup that the site feels slow.</em></p>
+  <p class="motion">One sentence: what is being changed, what it costs, and <em>on whose say-so.</em></p>
 
   <h2>Proceedings</h2>
   <div class="turns">
@@ -352,45 +352,27 @@
     <div class="turn x">
       <div class="glyph">X<small>R1</small></div>
       <div class="body">
-        <p class="slot"><span class="k">Change</span>Add Upstash Redis and cache CMS API responses across the site.</p>
-        <p class="slot"><span class="k">Why now</span><span class="struck">A teammate said in standup that the site feels slow and users are complaining.</span><span class="tag">Struck</span></p>
-        <p class="slot"><span class="k">Cost</span>~1 engineer-day, ~$10/month recurring, plus a cache-invalidation surface to maintain forever.</p>
-        <p class="slot"><span class="k">Rollback</span>Remove the client and the read/write calls, redeploy.</p>
+        <p class="slot"><span class="k">Change</span>What X wants to do.</p>
+        <p class="slot"><span class="k">Why now</span><span class="struck">A claim that turned out to carry no evidence.</span><span class="tag">Struck</span></p>
+        <p class="slot"><span class="k">Cost</span>Time, money, risk, and what it commits you to.</p>
+        <p class="slot"><span class="k">Rollback</span>How to undo it.</p>
       </div>
     </div>
 
     <div class="turn y">
       <div class="glyph">Y<small>R1</small></div>
       <div class="body">
-        <p class="slot"><span class="k">Premise</span>No profiling data, no analytics, no ticket — and every page is statically generated at build time, so there is no per-request CMS call for Redis to intercept.</p>
-        <p class="slot"><span class="k">Weak point</span>それってあなたの感想ですよね — the entire case rests on one impression at ~300 visitors/day, with no page named and nothing measured.</p>
-        <p class="slot"><span class="k">Do it</span>Caches a request path static pages never take: ~0ms of user-facing gain for a day of work.</p>
-        <p class="slot"><span class="k">Don't</span>Nothing breaks. Pages stay exactly as fast, and a day stays free for finding what is actually slow.</p>
-        <p class="slot"><span class="k">Else</span>Two hours: Lighthouse against real URLs, and grep for any ISR or <code>getServerSideProps</code> path that hits the CMS at runtime.</p>
-        <p class="slot"><span class="k">Rules</span>Verification must match risk — the failure mode itself is not established.</p>
-        <p class="slot"><span class="k">Verdict</span><b>REJECT</b> — profile first.</p>
+        <p class="slot"><span class="k">Premise</span>Is the problem real, is it the problem X named, is it worth solving now.</p>
+        <p class="slot"><span class="k">Weak point</span>The single weakest link in X&rsquo;s case.</p>
+        <p class="slot"><span class="k">Do it</span>The benefit, with a magnitude attached.</p>
+        <p class="slot"><span class="k">Don&rsquo;t</span>What breaks, and what is preserved.</p>
+        <p class="slot"><span class="k">Else</span>The strongest alternative, concrete enough to build.</p>
+        <p class="slot"><span class="k">Rules</span>User instructions, then project rules, then the conventions in the files touched.</p>
+        <p class="slot"><span class="k">Verdict</span><b>ACCEPT / ACCEPT WITH CHANGES / REJECT</b></p>
       </div>
     </div>
 
-    <div class="turn x">
-      <div class="glyph">X<small>R2</small></div>
-      <div class="body">
-        <p class="slot"><span class="k">Change</span>Withdraw Redis. Spend two hours on a read-only diagnostic instead.</p>
-        <p class="slot"><span class="k">Why now</span>The premise attack holds: static generation means there is likely nothing at request time to cache.</p>
-        <p class="slot"><span class="k">Cost</span>2 hours and $0, against 1 day and $10/month.</p>
-        <p class="slot"><span class="k">Rollback</span>None needed — nothing is installed or deployed.</p>
-      </div>
-    </div>
-
-    <div class="turn y">
-      <div class="glyph">Y<small>R2</small></div>
-      <div class="body">
-        <p class="slot"><span class="k">Premise</span>Now matches the evidence — establish whether a request-time CMS call exists before building anything for it.</p>
-        <p class="slot"><span class="k">Weak point</span>"Three representative URLs" names no selection rule and no pass mark, so the diagnostic ends in three numbers nobody can act on.</p>
-        <p class="slot"><span class="k">Else</span>Ask the teammate which page felt slow — five minutes, but it yields a second unmeasured impression, the exact flaw already struck. It loses.</p>
-        <p class="slot"><span class="k">Verdict</span><b>ACCEPT WITH CHANGES</b></p>
-      </div>
-    </div>
+    <!-- Repeat a pair of turns per round, up to ten per side. -->
 
   </div>
 
@@ -402,24 +384,24 @@
       </thead>
       <tbody>
         <tr>
-          <td>"The site feels slow, users are complaining"</td>
+          <td>The claim, as it was made</td>
+          <td><span class="grade g-cited">Cited</span></td>
+          <td class="src">File and line, or URL and the date fetched</td>
+        </tr>
+        <tr>
+          <td>The claim</td>
           <td><span class="grade g-struck">Struck</span></td>
-          <td class="src">No profile, no analytics, no ticket</td>
+          <td class="src">Checkable in under a minute, and nobody checked</td>
         </tr>
         <tr>
-          <td>Every page is statically generated at build time</td>
-          <td><span class="grade g-cited">Cited</span></td>
-          <td class="src">next.config.mjs · no ISR, no getServerSideProps</td>
+          <td>The claim</td>
+          <td><span class="grade g-dead">Dead</span></td>
+          <td class="src">What was checked, and how it contradicted the claim</td>
         </tr>
         <tr>
-          <td>Upstash runs about $10/month at this volume</td>
-          <td><span class="grade g-cited">Cited</span></td>
-          <td class="src">upstash.com/pricing · fetched 2026-09-13</td>
-        </tr>
-        <tr>
-          <td>Users are abandoning the site over load time</td>
+          <td>The claim</td>
           <td><span class="grade g-unverified">Unverified</span></td>
-          <td class="src">No analytics installed — a week of RUM data would settle it</td>
+          <td class="src">The query actually run, and what evidence would settle it</td>
         </tr>
       </tbody>
     </table>
@@ -429,34 +411,34 @@
   <div class="options">
     <div class="option">
       <h3>Do it</h3>
-      <p>Redis in front of a CMS the pages never call at request time. One day, $10/month, ~0ms.</p>
+      <p>The case for the change.</p>
     </div>
     <div class="option">
-      <h3>Don't</h3>
-      <p>Nothing breaks. The complaint stays unmeasured and returns at the next standup.</p>
+      <h3>Don&rsquo;t</h3>
+      <p>The case for the status quo.</p>
     </div>
     <div class="option won">
       <h3>Do something else</h3>
-      <p>Two hours: Lighthouse on the highest-traffic CMS-dependent pages, plus a grep for runtime CMS calls.</p>
+      <p>The case for the alternative. Mark whichever option won.</p>
     </div>
   </div>
 
   <h2>The call</h2>
   <div class="verdict">
     <div>
-      <p class="eyebrow">Verdict — Y, round 2</p>
-      <p class="call">Accept with changes: diagnose for two hours, build nothing.</p>
-      <p class="because">Pick the three URLs by traffic and CMS dependence rather than arbitrarily, and fix the pass mark — LCP ≤ 2.5s, TTFB ≤ 600ms — <em>before</em> running it, so the two hours end in a verdict instead of three numbers.</p>
+      <p class="eyebrow">Verdict &mdash; who issued it, which round</p>
+      <p class="call">The decision in one sentence.</p>
+      <p class="because">The conditions attached to it, and the one line of reasoning that decided it. If the Judge was called, this block carries the Judge&rsquo;s four parts instead.</p>
     </div>
     <div class="stamp">Accept<br>with<br>changes</div>
   </div>
 
   <div class="carried">
-    <b>Carried forward from the losing side:</b> the complaint is still real and still unmeasured. If the diagnostic passes its own thresholds, the next question is what the teammate actually experienced — not whether to cache it.
+    <b>Carried forward from the losing side:</b> the one point the losing side got right that survives the verdict.
   </div>
 
   <div class="colophon">
-    <span>X proposes · Y challenges · Judge breaks ties</span>
+    <span>X proposes &middot; Y challenges &middot; Judge breaks ties</span>
     <span>debate-room</span>
   </div>
 

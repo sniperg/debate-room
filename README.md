@@ -36,16 +36,13 @@ git clone https://github.com/sniperg/debate-room.git ~/.agents/skills/debate
 
 **How you invoke it differs by harness.** Claude Code exposes skills as slash commands, so `/debate` works there. Codex has no user-defined slash commands — skills are offered to the model, so ask for it by name: *"use the debate skill on this"*. In both, the agent should also reach for it unprompted before a change lands.
 
-## Example
+## The turn format
+
+Each turn is a fixed set of slots, one sentence each. Nothing else goes in a turn.
 
 ```
-X: Cache the pricing table in module scope — the JSON parse runs on every request.
-   Cost: stale data until redeploy. Rollback: delete 3 lines.
-Y: Do it → saves ~4ms/req. Don't → 4ms is invisible next to the 200ms DB call.
-   Else → memoize with a 60s TTL, same win, no staleness.
-   Rules: CLAUDE.md forbids module-scope mutable state. REJECT.
-X: Concede. TTL memo it is.
-Y: ACCEPT WITH CHANGES: 60s TTL, no module-scope mutation.
+X:  Change: · Why now: · Cost/risk: · Rollback:
+Y:  Premise: · Weak point: · Do it: · Don't: · Else: · Rules: · VERDICT
 ```
 
 ## License

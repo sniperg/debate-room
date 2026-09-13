@@ -114,8 +114,7 @@ The debate always runs in full. How much of it reaches the reader is their choic
 When the verdict lands, print the call, then the menu, then stop and wait:
 
 ```
-The call: ACCEPT WITH CHANGES — link to Mailchimp's hosted form; no ESP
-migration until the last 10 campaigns are baselined.
+The call: <VERDICT> — <the decision in one sentence, with its conditions>
 
 How much do you want?
   1. Just this.
@@ -150,7 +149,7 @@ Record the answer — destination and path — in `output.local.json` beside thi
 
 The vault option uses the frontmatter already in `record-template.md` — `verdict`, `rounds`, `judge`, `tags` — so past decisions are queryable. The scroll is a rendering of the same record, never a replacement for it.
 
-Title the record after the subject of the motion in two to four words — "Redis on a Static Site", not "Debate Record" and not the whole motion sentence. One record per debate, rewritten in place if the debate reopens.
+Title the record after the subject of the motion in two to four words — name the thing being decided, not "Debate Record", and not the whole motion sentence. One record per debate, rewritten in place if the debate reopens.
 
 ## Rationalizations
 
@@ -188,12 +187,10 @@ Title the record after the subject of the motion in two to four words — "Redis
 ## Example
 
 ```
-X: Cache the pricing table in module scope — the JSON parse runs on every request.
-   Cost: stale data until redeploy. Rollback: delete 3 lines.
-Y: Premise: "every request" is unsourced — no profile, struck.
-   Weak point: 4ms against the 200ms DB call in db.ts:41 is noise.
-   Do it → 4ms. Don't → nothing breaks. Else → memoize with a 60s TTL if a profile ever justifies it.
-   Rules: CLAUDE.md forbids module-scope mutable state. REJECT.
-X: Concede. TTL memo it is.
-Y: ACCEPT WITH CHANGES: 60s TTL, no module-scope mutation.
+X: Change: <what> · Why now: <trigger> · Cost/risk: <what it commits you to> · Rollback: <how to undo>
+Y: Premise: <is the problem real> · Weak point: <weakest link>
+   Do it: <benefit, with a magnitude> · Don't: <what breaks> · Else: <best rival>
+   Rules: <what the stated rules say> · VERDICT
+X: Concede / amend / defend with one new argument.
+Y: ACCEPT WITH CHANGES: <the conditions>
 ```
