@@ -1,0 +1,465 @@
+<title>Redis on a Static Site</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500;6..72,600&display=swap">
+<style>
+  :root {
+    --paper:      #e9edf1;
+    --leaf:       #f6f8fa;
+    --ink:        #131c25;
+    --ink-soft:   #4a5b6b;
+    --ink-faint:  #7d8d9c;
+    --rule:       #c3cdd6;
+    --rule-soft:  #d9e0e6;
+    --x:          #2b5875;
+    --x-wash:     #dce6ee;
+    --y:          #8a2b36;
+    --y-wash:     #f0dcde;
+    --seal:       #2c6350;
+    --seal-wash:  #d8e6e0;
+    --strike:     #a3313d;
+    --shadow:     rgba(19,28,37,.14);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:     #0e141a;
+      --leaf:      #161f28;
+      --ink:       #dde5ec;
+      --ink-soft:  #94a5b4;
+      --ink-faint: #6b7b8a;
+      --rule:      #2b3945;
+      --rule-soft: #212c36;
+      --x:         #7fb0d4;
+      --x-wash:    #1a2a37;
+      --y:         #d98a93;
+      --y-wash:    #33191d;
+      --seal:      #7dc0a6;
+      --seal-wash: #16302a;
+      --strike:    #d9727d;
+      --shadow:    rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:     #0e141a;
+    --leaf:      #161f28;
+    --ink:       #dde5ec;
+    --ink-soft:  #94a5b4;
+    --ink-faint: #6b7b8a;
+    --rule:      #2b3945;
+    --rule-soft: #212c36;
+    --x:         #7fb0d4;
+    --x-wash:    #1a2a37;
+    --y:         #d98a93;
+    --y-wash:    #33191d;
+    --seal:      #7dc0a6;
+    --seal-wash: #16302a;
+    --strike:    #d9727d;
+    --shadow:    rgba(0,0,0,.5);
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Newsreader", Georgia, serif;
+    font-size: 17px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  * { box-sizing: border-box; }
+
+  .roll {
+    height: 26px;
+    background:
+      linear-gradient(180deg, var(--rule) 0%, var(--leaf) 42%, var(--paper) 100%);
+    border-bottom: 1px solid var(--rule);
+    box-shadow: 0 6px 14px -6px var(--shadow);
+  }
+  .roll.bottom {
+    background: linear-gradient(0deg, var(--rule) 0%, var(--leaf) 42%, var(--paper) 100%);
+    border-bottom: none;
+    border-top: 1px solid var(--rule);
+    box-shadow: 0 -6px 14px -6px var(--shadow);
+  }
+
+  .sheet {
+    max-width: 720px;
+    margin: 0 auto;
+    padding-inline: 22px;
+    padding-block: 40px 56px;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  h1 {
+    font-family: "Bodoni Moda", Didot, Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(30px, 6vw, 46px);
+    line-height: 1.08;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+    margin: 14px 0 0;
+  }
+
+  .docket {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 26px;
+    margin-top: 20px;
+    padding-block: 14px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-soft);
+  }
+  .docket b { color: var(--ink); font-weight: 600; }
+
+  h2 {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 52px 0 18px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .motion { font-size: 19px; line-height: 1.55; margin: 0; }
+  .motion em { font-style: italic; color: var(--ink-soft); }
+
+  .turns { display: flex; flex-direction: column; gap: 26px; }
+
+  .turn {
+    display: grid;
+    grid-template-columns: 54px 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+  .glyph {
+    font-family: "Bodoni Moda", Didot, serif;
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1;
+    text-align: center;
+    padding: 9px 0 11px;
+    border-radius: 2px;
+  }
+  .glyph small {
+    display: block;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    margin-top: 6px;
+    opacity: .75;
+  }
+  .turn.x .glyph { color: var(--x); background: var(--x-wash); }
+  .turn.y .glyph { color: var(--y); background: var(--y-wash); }
+  .turn.x .body { border-left: 2px solid var(--x); }
+  .turn.y .body { border-left: 2px solid var(--y); }
+  .body { padding-left: 16px; }
+
+  .slot { margin: 0 0 9px; }
+  .slot:last-child { margin-bottom: 0; }
+  .slot .k {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-right: 8px;
+  }
+  .turn.x .slot .k { color: var(--x); }
+  .turn.y .slot .k { color: var(--y); }
+
+  .struck {
+    text-decoration: line-through;
+    text-decoration-color: var(--strike);
+    text-decoration-thickness: 2px;
+    color: var(--ink-faint);
+  }
+  .tag {
+    display: inline-block;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+    vertical-align: 2px;
+    margin-left: 6px;
+    color: var(--strike);
+    border: 1px solid var(--strike);
+  }
+
+  .ledger-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: left;
+    padding: 0 14px 9px 0;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  td {
+    padding: 11px 14px 11px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+  }
+  td:last-child, th:last-child { padding-right: 0; }
+  .grade {
+    display: inline-block;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .g-cited      { color: var(--seal); background: var(--seal-wash); }
+  .g-struck     { color: var(--strike); background: var(--y-wash); }
+  .g-dead       { color: var(--strike); background: var(--y-wash); }
+  .g-unverified { color: var(--ink-soft); background: var(--rule-soft); }
+  .src {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    word-break: break-word;
+  }
+
+  .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+  .option { background: var(--leaf); padding: 16px 15px; }
+  .option h3 {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 8px;
+  }
+  .option p { margin: 0; font-size: 15px; line-height: 1.5; }
+  .option.won h3 { color: var(--seal); }
+  .option.won { box-shadow: inset 3px 0 0 var(--seal); }
+
+  .verdict {
+    margin-top: 52px;
+    border: 1px solid var(--rule);
+    background: var(--leaf);
+    padding: 30px 28px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 26px;
+    align-items: center;
+  }
+  .verdict .call {
+    font-family: "Bodoni Moda", Didot, serif;
+    font-size: clamp(21px, 4vw, 27px);
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 8px 0 0;
+    text-wrap: balance;
+  }
+  .verdict .because { margin: 14px 0 0; color: var(--ink-soft); font-size: 15.5px; }
+  .stamp {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--seal);
+    border: 2px solid var(--seal);
+    border-radius: 50%;
+    width: 104px;
+    height: 104px;
+    display: grid;
+    place-content: center;
+    text-align: center;
+    line-height: 1.35;
+    rotate: -8deg;
+    flex: none;
+  }
+  .stamp.reject { color: var(--strike); border-color: var(--strike); }
+
+  .carried {
+    margin-top: 22px;
+    padding: 15px 17px;
+    border-left: 2px solid var(--ink-faint);
+    background: var(--leaf);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .carried b { color: var(--ink); font-weight: 600; }
+
+  .colophon {
+    margin-top: 46px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+  }
+
+  @media (max-width: 620px) {
+    .options { grid-template-columns: 1fr; }
+    .verdict { grid-template-columns: 1fr; }
+    .turn { grid-template-columns: 40px 1fr; gap: 13px; }
+    .glyph { font-size: 23px; }
+  }
+</style>
+
+<div class="roll"></div>
+
+<div class="sheet">
+
+  <p class="eyebrow">Record of proceedings</p>
+  <h1>Add Redis to cache the CMS on a 300-visitor marketing site</h1>
+
+  <div class="docket">
+    <span>Ref <b>DBT-0007</b></span>
+    <span>Heard <b>2026-09-13</b></span>
+    <span>Rounds <b>2 of 10</b></span>
+    <span>Searches <b>3</b></span>
+    <span>Judge <b>not called</b></span>
+  </div>
+
+  <h2>The motion</h2>
+  <p class="motion">Install Upstash Redis and cache CMS responses across the marketing site — roughly one day of work and about $10 a month — <em>because a teammate said in standup that the site feels slow.</em></p>
+
+  <h2>Proceedings</h2>
+  <div class="turns">
+
+    <div class="turn x">
+      <div class="glyph">X<small>R1</small></div>
+      <div class="body">
+        <p class="slot"><span class="k">Change</span>Add Upstash Redis and cache CMS API responses across the site.</p>
+        <p class="slot"><span class="k">Why now</span><span class="struck">A teammate said in standup that the site feels slow and users are complaining.</span><span class="tag">Struck</span></p>
+        <p class="slot"><span class="k">Cost</span>~1 engineer-day, ~$10/month recurring, plus a cache-invalidation surface to maintain forever.</p>
+        <p class="slot"><span class="k">Rollback</span>Remove the client and the read/write calls, redeploy.</p>
+      </div>
+    </div>
+
+    <div class="turn y">
+      <div class="glyph">Y<small>R1</small></div>
+      <div class="body">
+        <p class="slot"><span class="k">Premise</span>No profiling data, no analytics, no ticket — and every page is statically generated at build time, so there is no per-request CMS call for Redis to intercept.</p>
+        <p class="slot"><span class="k">Weak point</span>それってあなたの感想ですよね — the entire case rests on one impression at ~300 visitors/day, with no page named and nothing measured.</p>
+        <p class="slot"><span class="k">Do it</span>Caches a request path static pages never take: ~0ms of user-facing gain for a day of work.</p>
+        <p class="slot"><span class="k">Don't</span>Nothing breaks. Pages stay exactly as fast, and a day stays free for finding what is actually slow.</p>
+        <p class="slot"><span class="k">Else</span>Two hours: Lighthouse against real URLs, and grep for any ISR or <code>getServerSideProps</code> path that hits the CMS at runtime.</p>
+        <p class="slot"><span class="k">Rules</span>Verification must match risk — the failure mode itself is not established.</p>
+        <p class="slot"><span class="k">Verdict</span><b>REJECT</b> — profile first.</p>
+      </div>
+    </div>
+
+    <div class="turn x">
+      <div class="glyph">X<small>R2</small></div>
+      <div class="body">
+        <p class="slot"><span class="k">Change</span>Withdraw Redis. Spend two hours on a read-only diagnostic instead.</p>
+        <p class="slot"><span class="k">Why now</span>The premise attack holds: static generation means there is likely nothing at request time to cache.</p>
+        <p class="slot"><span class="k">Cost</span>2 hours and $0, against 1 day and $10/month.</p>
+        <p class="slot"><span class="k">Rollback</span>None needed — nothing is installed or deployed.</p>
+      </div>
+    </div>
+
+    <div class="turn y">
+      <div class="glyph">Y<small>R2</small></div>
+      <div class="body">
+        <p class="slot"><span class="k">Premise</span>Now matches the evidence — establish whether a request-time CMS call exists before building anything for it.</p>
+        <p class="slot"><span class="k">Weak point</span>"Three representative URLs" names no selection rule and no pass mark, so the diagnostic ends in three numbers nobody can act on.</p>
+        <p class="slot"><span class="k">Else</span>Ask the teammate which page felt slow — five minutes, but it yields a second unmeasured impression, the exact flaw already struck. It loses.</p>
+        <p class="slot"><span class="k">Verdict</span><b>ACCEPT WITH CHANGES</b></p>
+      </div>
+    </div>
+
+  </div>
+
+  <h2>Evidence ledger</h2>
+  <div class="ledger-wrap">
+    <table>
+      <thead>
+        <tr><th>Claim</th><th>Grade</th><th>Source</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>"The site feels slow, users are complaining"</td>
+          <td><span class="grade g-struck">Struck</span></td>
+          <td class="src">No profile, no analytics, no ticket</td>
+        </tr>
+        <tr>
+          <td>Every page is statically generated at build time</td>
+          <td><span class="grade g-cited">Cited</span></td>
+          <td class="src">next.config.mjs · no ISR, no getServerSideProps</td>
+        </tr>
+        <tr>
+          <td>Upstash runs about $10/month at this volume</td>
+          <td><span class="grade g-cited">Cited</span></td>
+          <td class="src">upstash.com/pricing · fetched 2026-09-13</td>
+        </tr>
+        <tr>
+          <td>Users are abandoning the site over load time</td>
+          <td><span class="grade g-unverified">Unverified</span></td>
+          <td class="src">No analytics installed — a week of RUM data would settle it</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>The three options</h2>
+  <div class="options">
+    <div class="option">
+      <h3>Do it</h3>
+      <p>Redis in front of a CMS the pages never call at request time. One day, $10/month, ~0ms.</p>
+    </div>
+    <div class="option">
+      <h3>Don't</h3>
+      <p>Nothing breaks. The complaint stays unmeasured and returns at the next standup.</p>
+    </div>
+    <div class="option won">
+      <h3>Do something else</h3>
+      <p>Two hours: Lighthouse on the highest-traffic CMS-dependent pages, plus a grep for runtime CMS calls.</p>
+    </div>
+  </div>
+
+  <h2>The call</h2>
+  <div class="verdict">
+    <div>
+      <p class="eyebrow">Verdict — Y, round 2</p>
+      <p class="call">Accept with changes: diagnose for two hours, build nothing.</p>
+      <p class="because">Pick the three URLs by traffic and CMS dependence rather than arbitrarily, and fix the pass mark — LCP ≤ 2.5s, TTFB ≤ 600ms — <em>before</em> running it, so the two hours end in a verdict instead of three numbers.</p>
+    </div>
+    <div class="stamp">Accept<br>with<br>changes</div>
+  </div>
+
+  <div class="carried">
+    <b>Carried forward from the losing side:</b> the complaint is still real and still unmeasured. If the diagnostic passes its own thresholds, the next question is what the teammate actually experienced — not whether to cache it.
+  </div>
+
+  <div class="colophon">
+    <span>X proposes · Y challenges · Judge breaks ties</span>
+    <span>debate-room</span>
+  </div>
+
+</div>
+
+<div class="roll bottom"></div>
